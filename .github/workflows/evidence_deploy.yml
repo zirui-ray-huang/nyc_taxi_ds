@@ -1,4 +1,4 @@
-name: Deploy Evidence to Pages
+name: Deploy Evidence to GitHub Pages
 
 on:
   # Deploy on every push to main
@@ -20,42 +20,44 @@ jobs:
         working-directory: nyc_taxi_motherduck/reports
 
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true
-
-      - name: Setup Node.js
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'nyc_taxi_motherduck/reports/package-lock.json'
+          node-version: 20
+          cache: npm
+          cache-dependency-path: nyc_taxi_motherduck/reports/package-lock.json
 
       - name: Install dependencies
         run: npm install
 
       - name: Build Evidence Site
         env:
-          # Evidence needs your MotherDuck token to fetch data for the reports
+          BASE_PATH: '/${{ github.event.repository.name }}'
           MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
-        run: npm run build
+        run: |
+          npm run sources
+          npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Path to the build output
-          path: nyc_taxi_motherduck/reports/build 
+          path: 'nyc_taxi_motherduck/reports/build/${{ github.event.repository.name }}'
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

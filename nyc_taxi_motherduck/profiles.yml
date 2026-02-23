@@ -1,0 +1,21 @@
+nyc_taxi_motherduck:
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DB_PATH', '../nyc_taxi_db.duckdb') }}"
+      extensions:
+        - httpfs
+        - parquet
+      threads: 1
+      schema: main
+    prod:
+      type: duckdb
+      path: "md:nyc_taxi_db?token={{ env_var('MOTHERDUCK_TOKEN') }}"
+      extensions:
+        - httpfs
+        - parquet
+      settings:
+        s3_region: "us-east-1"
+      threads: 4
+      schema: main
+  target: prod

@@ -42,11 +42,12 @@ jobs:
       - name: Install dbt packages
         working-directory: nyc_taxi_motherduck
         # dbt deps installs external packages defined in packages.yml
-        run: uv run dbt deps
+        run: uv run dbt deps --profiles-dir .
 
       - name: Run dbt Build
         working-directory: nyc_taxi_motherduck
         # Passing the workflow inputs into the dbt command
         run: >
           uv run dbt build -t prod 
+          --profiles-dir .
           --vars '{"year": "${{ github.event.inputs.year }}", "month": "${{ github.event.inputs.month }}"}'

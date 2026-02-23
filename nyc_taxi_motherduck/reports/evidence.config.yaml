@@ -81,4 +81,4 @@ plugins:
     "@evidence-dev/motherduck": { }
 
 deployment:
-  basePath: /nyc_taxi_reports
+  basePath: /nyc_taxi_ds

@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_green_trips
+    description: "Silver layer for Green Taxi data."
+    columns:
+      - name: trip_id
+        tests:
+          - unique
+          - not_null
+      - name: imputed_passenger_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+      - name: imputed_trip_distance
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0.01 # Ensuring no 0 distances remain
+  
+  - name: stg_yellow_trips
+    description: "Silver layer for Yellow Taxi data."
+    columns:
+      - name: trip_id
+        tests:
+          - unique
+          - not_null
+      - name: imputed_passenger_count
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+      - name: imputed_trip_distance
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0.01 # Ensuring no 0 distances remain

@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: s3_raw
+    loader: s3
+    tables:
+      - name: green_trips
+        description: "Raw Green Taxi trip data stored in Parquet format on S3."
+        meta:
+          external_location: > 
+            read_parquet('https://d37ci6vzurychx.cloudfront.net/trip-data/green_tripdata_{{ var("year", "2025") }}-{{ var("month", "11") }}.parquet')
+      - name: yellow_trips
+        description: "Raw Yellow Taxi trip data stored in Parquet format on S3."
+        meta:
+          external_location: > 
+            read_parquet('https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_{{ var("year", "2025") }}-{{ var("month", "11") }}.parquet')

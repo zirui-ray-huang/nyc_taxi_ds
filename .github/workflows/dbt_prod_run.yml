@@ -38,15 +38,14 @@ jobs:
       - name: Sync Dependencies
         # uv sync is faster than pip install because it uses the uv.lock file
         run: uv sync --frozen
-      
-      - name: Change to dbt project directory
-        run: cd nyc_taxi_motherduck
 
       - name: Install dbt packages
+        working-directory: nyc_taxi_motherduck
         # dbt deps installs external packages defined in packages.yml
         run: uv run dbt deps
 
       - name: Run dbt Build
+        working-directory: nyc_taxi_motherduck
         # Passing the workflow inputs into the dbt command
         run: >
           uv run dbt build -t prod 

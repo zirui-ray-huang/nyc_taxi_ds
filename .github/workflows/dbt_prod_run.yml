@@ -1,0 +1,53 @@
+name: dbt_prod_run
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: 'Year to process'
+        required: true
+        default: '2025'
+      month:
+        description: 'Month to process'
+        required: true
+        default: '11'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      # Secrets must be mapped to env vars for dbt to read them
+      MOTHERDUCK_TOKEN: ${{ secrets.MOTHERDUCK_TOKEN }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: "latest"
+          enable-cache: true
+          # This ensures that the cache is tied to your lockfile
+          cache-dependency-glob: "uv.lock"
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Sync Dependencies
+        # uv sync is faster than pip install because it uses the uv.lock file
+        run: uv sync --frozen
+      
+      - name: Change to dbt project directory
+        run: cd nyc_taxi_motherduck
+
+      - name: Install dbt packages
+        # dbt deps installs external packages defined in packages.yml
+        run: uv run dbt deps
+
+      - name: Run dbt Build
+        # Passing the workflow inputs into the dbt command
+        run: >
+          uv run dbt build -t prod 
+          --vars '{"year": "${{ github.event.inputs.year }}", "month": "${{ github.event.inputs.month }}"}'

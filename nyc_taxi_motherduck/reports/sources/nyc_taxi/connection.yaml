@@ -1,0 +1,8 @@
+name: nyc_taxi
+type: duckdb
+options:
+  filename: "md:nyc_taxi_db"
+  read_only: true
+initialization:
+  - INSTALL spatial;
+  - LOAD spatial;

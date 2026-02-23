@@ -10,7 +10,7 @@ nyc_taxi_motherduck:
       schema: main
     prod:
       type: duckdb
-      path: "md:nyc_taxi_db?token={{ env_var('MOTHERDUCK_TOKEN') }}"
+      path: "md:nyc_taxi_db"
       extensions:
         - httpfs
         - parquet

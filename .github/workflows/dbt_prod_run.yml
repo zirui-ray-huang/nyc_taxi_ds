@@ -1,4 +1,4 @@
-name: dbt_prod_run
+name: Production Data Pipeline (Monthly Build)
 
 on:
   workflow_dispatch:

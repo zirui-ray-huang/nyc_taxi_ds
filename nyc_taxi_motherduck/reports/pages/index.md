@@ -23,7 +23,41 @@ This report reflects operations up to
 
 
 
-Welcome to the NYC Taxi Analysis portal. Select a report below to dive deeper into the data.
+Welcome to the NYC Taxi Analysis portal. 
+
+### Overview
+
+<Grid cols=2>
+  <BigValue 
+    data={latest_kpis.filter(d => d.service_type === 'Yellow')} 
+    value=total_revenue
+    title="Yellow Revenue (Latest Month)"
+    row=last
+  />
+  <BigValue 
+    data={latest_kpis.filter(d => d.service_type === 'Yellow')} 
+    value=total_trips
+    title="Yellow Trips (Latest Month)"
+    row=last
+  />
+  <BigValue 
+    data={latest_kpis.filter(d => d.service_type === 'Green')} 
+    value=total_revenue
+    title="Green Revenue (Latest Month)"
+    row=last
+  />
+  <BigValue 
+    data={latest_kpis.filter(d => d.service_type === 'Green')} 
+    value=total_trips
+    title="Green Trips (Latest Month)"
+    row=last
+  />
+  
+</Grid>
+
+### Reports
+
+Select a report below to dive deeper into the data.
 
 <Grid cols=3>
     <div style="padding: 15px; border: 1px solid #eee; border-radius: 8px;">
@@ -43,20 +77,3 @@ Welcome to the NYC Taxi Analysis portal. Select a report below to dive deeper in
 </Grid>
 
 <br/>
-
-### Market Overview
-
-<Grid cols=2>
-  <BigValue 
-    data={latest_kpis.filter(d => d.service_type === 'Yellow')} 
-    value=total_revenue
-    title="Yellow Revenue (Latest)"
-    row=last
-  />
-  <BigValue 
-    data={latest_kpis.filter(d => d.service_type === 'Green')} 
-    value=total_revenue
-    title="Green Revenue (Latest)"
-    row=last
-  />
-</Grid>

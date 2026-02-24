@@ -19,17 +19,12 @@ with source as (
         (extract(year from lpep_dropoff_datetime) = {{ current_year }} 
          and extract(month from lpep_dropoff_datetime) = {{ current_month }})
     )
-
-    qualify row_number() over (
-        partition by VendorID, lpep_pickup_datetime, lpep_dropoff_datetime, PULocationID, DOLocationID
-        order by lpep_pickup_datetime
-    ) = 1
 ),
 
 renamed as (
     select
         -- Trip ID Generation using surrogate key
-        {{ dbt_utils.generate_surrogate_key(['VendorID', 'lpep_pickup_datetime', 'lpep_dropoff_datetime', 'passenger_count', 'trip_distance', 'total_amount']) }} as trip_id,
+        {{ dbt_utils.generate_surrogate_key(['VendorID', 'lpep_pickup_datetime', 'lpep_dropoff_datetime', 'PULocationID', 'DOLocationID']) }} as trip_id,
         
         -- Vendor Mapping
         {{ get_vendor('VendorID') }} as vendor,
@@ -63,6 +58,11 @@ renamed as (
     from source
 ),
 
+deduped as (
+    select * from renamed
+    qualify row_number() over (partition by trip_id order by pickup_datetime) = 1
+),
+
 -- Calculate medians as a summary table
 medians_route as (
     select 
@@ -90,24 +90,24 @@ median_global_distance as (
 
 final as (
     select
-        r.*,
+        d.*,
         -- Imputation Logic
         coalesce(
-            nullif(r.passenger_count, 0), 
+            nullif(d.passenger_count, 0), 
             g1.global_median_passengers
         ) as imputed_passenger_count,
 
         coalesce(
-            nullif(r.trip_distance, 0), 
+            nullif(d.trip_distance, 0), 
             m.route_median_distance, 
             g2.global_median_distance, 
             0
         ) as imputed_trip_distance
 
-    from renamed r
+    from deduped d
     left join medians_route m 
-        on r.pickup_location_id = m.pickup_location_id 
-        and r.dropoff_location_id = m.dropoff_location_id
+        on d.pickup_location_id = m.pickup_location_id 
+        and d.dropoff_location_id = m.dropoff_location_id
     cross join median_global_passenger_count g1
     cross join median_global_distance g2
 )

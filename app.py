@@ -19,6 +19,7 @@ load_dotenv()
 # Retrieve credentials
 MD_TOKEN = os.getenv("MOTHERDUCK_TOKEN")
 GOOGLE_KEY = os.getenv("GOOGLE_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
 # Configuration for the MotherDuck MCP Server
 server_params = StdioServerParameters(
@@ -43,7 +44,7 @@ async def process_query(user_query):
             
             # Setup Gemini (Using 1.5 Pro)
             llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash",
+                model=GEMINI_MODEL,
                 google_api_key=GOOGLE_KEY,
                 temperature=0
             )

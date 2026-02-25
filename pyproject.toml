@@ -7,4 +7,12 @@ requires-python = ">=3.10"
 dependencies = [
     "dbt-core>=1.11.6",
     "dbt-duckdb>=1.10.1",
+    "langchain>=1.2.10",
+    "langchain-classic>=1.0.1",
+    "langchain-community>=0.4.1",
+    "langchain-google-genai>=4.2.1",
+    "langchain-mcp-adapters>=0.2.1",
+    "mcp>=1.26.0",
+    "python-dotenv>=1.2.1",
+    "streamlit>=1.54.0",
 ]

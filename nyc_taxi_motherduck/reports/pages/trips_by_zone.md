@@ -8,9 +8,10 @@ Visualizing the top 20 trip origin zones.
 select 
     location_id::bigint::string as LocationID,
     zone,
-    total_trips
+    sum(total_trips) as total_trips
 from nyc_taxi.geo_data
 WHERE service_type = 'Yellow'
+group by 1, 2
 ORDER BY 3 DESC
 LIMIT 20
 ```
@@ -19,9 +20,10 @@ LIMIT 20
 select 
     location_id::bigint::string as LocationID,
     zone,
-    total_trips
+    sum(total_trips) as total_trips
 from nyc_taxi.geo_data
 WHERE service_type = 'Green'
+group by 1, 2
 ORDER BY 3 DESC
 LIMIT 20
 ```
